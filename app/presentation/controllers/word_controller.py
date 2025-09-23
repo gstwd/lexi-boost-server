@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.business.services import WordService
-from app.presentation.schemas import validate_json, WordSchema
+from app.presentation.schemas import validate_json, WordSchema, SchemaConverter
 from app.exceptions import ValidationError, NotFoundError, DatabaseError
 
 class WordController:
@@ -27,7 +27,7 @@ class WordController:
         """获取所有单词"""
         try:
             words = self._word_service.get_all_words()
-            words_data = [word.to_dict() for word in words]
+            words_data = SchemaConverter.words_to_response(words)
             return self.success_response(words_data)
         except Exception as e:
             raise DatabaseError(f"Failed to fetch words: {str(e)}")
@@ -36,7 +36,8 @@ class WordController:
         """根据ID获取单词"""
         try:
             word = self._word_service.get_word_by_id(word_id)
-            return self.success_response(word.to_dict())
+            word_data = SchemaConverter.word_to_response(word)
+            return self.success_response(word_data)
         except NotFoundError as e:
             raise e
         except Exception as e:
@@ -48,7 +49,8 @@ class WordController:
         try:
             data = request.validated_data
             word = self._word_service.create_word(data['word'], data['meaning'])
-            return self.success_response(word.to_dict(), "Word created successfully")
+            word_data = SchemaConverter.word_to_response(word)
+            return self.success_response(word_data, "Word created successfully")
         except Exception as e:
             raise DatabaseError(f"Failed to create word: {str(e)}")
     
@@ -58,7 +60,8 @@ class WordController:
         try:
             data = request.validated_data
             word = self._word_service.update_word(word_id, **data)
-            return self.success_response(word.to_dict(), "Word updated successfully")
+            word_data = SchemaConverter.word_to_response(word)
+            return self.success_response(word_data, "Word updated successfully")
         except NotFoundError as e:
             raise e
         except Exception as e:

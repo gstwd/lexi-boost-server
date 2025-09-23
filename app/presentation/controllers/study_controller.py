@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.business.services import StudyService
-from app.presentation.schemas import validate_json, StudyRecordSchema
+from app.presentation.schemas import validate_json, StudyRecordSchema, SchemaConverter
 from app.exceptions import ValidationError, NotFoundError, DatabaseError
 
 class StudyController:
@@ -27,13 +27,14 @@ class StudyController:
             data = request.validated_data
             word_id = data['word_id']
             status = data['status']
-            
+
             study_record = self._study_service.save_study_result(word_id, status)
-            
+
             if study_record:
+                study_data = SchemaConverter.study_record_to_response(study_record)
                 message = "Study record updated" if study_record.id else "Study record created"
-                return self.success_response(study_record.to_dict(), message)
-            
+                return self.success_response(study_data, message)
+
         except NotFoundError as e:
             raise e
         except Exception as e:
@@ -43,7 +44,8 @@ class StudyController:
         """获取学习记录"""
         try:
             record = self._study_service.get_study_record_by_word_id(word_id)
-            return self.success_response(record.to_dict())
+            record_data = SchemaConverter.study_record_to_response(record)
+            return self.success_response(record_data)
         except NotFoundError as e:
             raise e
         except Exception as e:

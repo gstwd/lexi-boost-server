@@ -1,5 +1,5 @@
 from flask import Flask
-from app.extensions import db, migrate
+from app.extensions import db, migrate, ma
 from app.error_handlers import register_error_handlers
 from app.logging_config import setup_logging, log_request_info
 from config import config
@@ -18,6 +18,7 @@ def create_app(config_name=None):
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
+    ma.init_app(app)
 
     # Register error handlers
     register_error_handlers(app)

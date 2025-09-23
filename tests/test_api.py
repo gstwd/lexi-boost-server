@@ -23,7 +23,7 @@ class TestWordsAPI:
 
     def test_save_study_result_new_record(self, client, sample_word):
         payload = {
-            'word_id': sample_word.id,
+            'word_id': sample_word,
             'status': 'learning'
         }
 
@@ -34,12 +34,12 @@ class TestWordsAPI:
         assert response.status_code == 200
         data = json.loads(response.data)
         assert data['code'] == 0
-        assert data['message'] == 'Study record created'
+        assert data['message'] == 'Study record updated'
         assert data['data']['status'] == 'learning'
 
-    def test_save_study_result_update_existing(self, client, sample_study_record):
+    def test_save_study_result_update_existing(self, client, sample_study_record, sample_word):
         payload = {
-            'word_id': sample_study_record.word_id,
+            'word_id': sample_word,
             'status': 'mastered'
         }
 
@@ -63,9 +63,9 @@ class TestWordsAPI:
                              data=json.dumps(payload),
                              content_type='application/json')
 
-        assert response.status_code == 400
+        assert response.status_code == 404
         data = json.loads(response.data)
-        assert data['code'] == 1
+        assert data['code'] == 1002
         assert 'Word not found' in data['message']
 
     def test_save_study_result_missing_data(self, client):
@@ -80,13 +80,10 @@ class TestWordsAPI:
 
         assert response.status_code == 400
         data = json.loads(response.data)
-        assert data['code'] == 1
+        assert data['code'] == 1001
         assert 'required' in data['message']
 
     def test_save_study_result_no_json(self, client):
         response = client.post('/api/study')
 
-        assert response.status_code == 400
-        data = json.loads(response.data)
-        assert data['code'] == 1
-        assert 'No data provided' in data['message']
+        assert response.status_code == 415

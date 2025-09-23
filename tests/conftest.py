@@ -41,12 +41,14 @@ def sample_word(app):
         word = Word(word="hello", meaning="a greeting")
         db.session.add(word)
         db.session.commit()
-        return word
+        word_id = word.id
+        return word_id
 
 @pytest.fixture
 def sample_study_record(app, sample_word):
     with app.app_context():
-        record = StudyRecord(word_id=sample_word.id, status="learning")
+        record = StudyRecord(word_id=sample_word, status="learning")
         db.session.add(record)
         db.session.commit()
-        return record
+        record_id = record.id
+        return record_id

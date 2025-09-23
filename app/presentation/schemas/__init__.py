@@ -3,13 +3,21 @@ from .validation_schemas import (
     WordSchema,
     WordQuerySchema,
     validate_json,
-    validate_args
+    validate_args,
+    WordResponseSchema,
+    StudyRecordResponseSchema,
+    WordWithStudyRecordSchema,
+    SchemaConverter
 )
 
 __all__ = [
     'StudyRecordSchema',
-    'WordSchema', 
+    'WordSchema',
     'WordQuerySchema',
     'validate_json',
-    'validate_args'
+    'validate_args',
+    'WordResponseSchema',
+    'StudyRecordResponseSchema',
+    'WordWithStudyRecordSchema',
+    'SchemaConverter'
 ]
