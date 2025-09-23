@@ -1,7 +1,5 @@
-import pytest
 import json
-from app.models import Word, StudyRecord
-from app.extensions import db
+
 
 class TestWordsAPI:
     def test_get_words_empty(self, client):

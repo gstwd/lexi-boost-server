@@ -1,5 +1,4 @@
-import pytest
-from app.models import Word, StudyRecord
+from app.data.models import Word, StudyRecord
 from app.extensions import db
 
 class TestWordModel:

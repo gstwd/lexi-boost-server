@@ -1,9 +1,11 @@
 from flask import Flask
 from app.extensions import db, migrate
-from app.routes import register_routes
 from app.error_handlers import register_error_handlers
 from app.logging_config import setup_logging, log_request_info
 from config import config
+from app.data.repositories import WordRepository, StudyRecordRepository
+from app.business.services import WordService, StudyService
+from app.presentation.controllers import WordController, StudyController
 import os
 
 def create_app(config_name=None):
@@ -24,14 +26,28 @@ def create_app(config_name=None):
     setup_logging(app)
     log_request_info(app)
 
-    # Register routes
-    register_routes(app)
+    # Import models to ensure they are registered with SQLAlchemy
+    from app.data import models
+
+    # Dependency injection and route registration
+    with app.app_context():
+        # Create repository instances
+        word_repository = WordRepository()
+        study_record_repository = StudyRecordRepository()
+
+        # Create service instances
+        word_service = WordService(word_repository)
+        study_service = StudyService(word_repository, study_record_repository)
+
+        # Create controller instances and register blueprints
+        word_controller = WordController(word_service)
+        study_controller = StudyController(study_service)
+
+        app.register_blueprint(word_controller.blueprint, url_prefix='/api')
+        app.register_blueprint(study_controller.blueprint, url_prefix='/api')
 
     # Register API documentation
     from app.api_docs import api_bp
     app.register_blueprint(api_bp, url_prefix='/api')
-
-    # Import models to ensure they are registered with SQLAlchemy
-    from app import models
 
     return app
