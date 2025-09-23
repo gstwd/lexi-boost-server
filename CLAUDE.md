@@ -21,7 +21,7 @@ This architecture provides better maintainability, testability, and separation o
 ```
 ├── app/
 │   ├── __init__.py                      # Flask app factory with dependency injection
-│   ├── extensions.py                    # Flask extensions (SQLAlchemy, Migrate)
+│   ├── extensions.py                    # Flask extensions (SQLAlchemy, Migrate, Flask-Marshmallow)
 │   ├── exceptions.py                    # Custom exception classes
 │   ├── error_handlers.py               # Global error handlers
 │   ├── logging_config.py               # Logging configuration
@@ -83,10 +83,12 @@ This architecture provides better maintainability, testability, and separation o
 - **Dependency Injection**: Proper IoC container for loose coupling
 - **DTOs**: Data Transfer Objects for clean data flow between layers
 
-### 3. Input Validation
-- Marshmallow schemas for request validation
+### 3. Input Validation & Serialization
+- Flask-Marshmallow schemas for request validation and response serialization
+- SQLAlchemyAutoSchema for automatic schema generation from models
 - Decorators for automatic validation
 - Comprehensive error messages
+- Enhanced Flask integration with tighter coupling
 
 ### 4. Logging System
 - Rotating file logs for production
@@ -104,6 +106,13 @@ This architecture provides better maintainability, testability, and separation o
 - Swagger/OpenAPI documentation with Flask-RESTX
 - Interactive API docs at `/api/docs/`
 - Request/response models
+
+### 7. Flask-Marshmallow Integration
+- Enhanced Flask integration with automatic SQLAlchemy model schema generation
+- `SQLAlchemyAutoSchema` for reducing boilerplate code
+- Automatic field type inference from model definitions
+- Consistent serialization/deserialization across the application
+- Better type safety and validation
 
 ## Setup Commands
 
@@ -162,10 +171,11 @@ Configure these in the `.env` file:
 - Follow three-layer architecture principles
 - Use repository interfaces for testability and loose coupling
 - Services contain business logic, not controllers
-- Use DTOs for data transfer between layers
+- Use DTOs with Flask-Marshmallow auto-generated schemas for data transfer between layers
 - Controllers handle only HTTP concerns (request/response)
 - Use custom exceptions instead of generic Exception
-- All API endpoints use input validation
+- All API endpoints use Flask-Marshmallow validation with SQLAlchemy integration
+- Response schemas leverage SQLAlchemyAutoSchema for automatic field generation
 - Database operations are wrapped in try-catch with rollback
 - Logging is automatically configured based on environment
 - Tests use in-memory SQLite for speed
@@ -180,12 +190,12 @@ Configure these in the `.env` file:
 
 ### Business Logic Layer (`app/business/`)
 - Domain services with business rules
-- Data Transfer Objects (DTOs)
+- Data Transfer Objects (DTOs) with Flask-Marshmallow auto-generated schemas
 - Business logic validation
 - Cross-cutting concerns
 
 ### Presentation Layer (`app/presentation/`)
 - HTTP controllers
 - Request/response handling
-- Input validation schemas
+- Flask-Marshmallow validation schemas with SQLAlchemy integration
 - API routing and blueprints
