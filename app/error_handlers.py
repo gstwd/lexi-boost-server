@@ -1,6 +1,7 @@
 from flask import jsonify
+
 from app.exceptions import APIException
-import logging
+
 
 def register_error_handlers(app):
     @app.errorhandler(APIException)

@@ -46,8 +46,4 @@ def create_app(config_name=None):
         app.register_blueprint(word_controller.blueprint, url_prefix='/api')
         app.register_blueprint(study_controller.blueprint, url_prefix='/api')
 
-    # Register API documentation
-    from app.api_docs import api_bp
-    app.register_blueprint(api_bp, url_prefix='/api')
-
     return app

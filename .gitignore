@@ -134,3 +134,5 @@ logs/
 .DS_Store
 .vscode/
 .idea/
+/.claude/
+/NUL
