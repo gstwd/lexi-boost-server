@@ -50,6 +50,7 @@ This architecture provides better maintainability, testability, and separation o
 │   └── presentation/                   # Presentation Layer
 │       ├── controllers/                # HTTP controllers
 │       │   ├── __init__.py
+│       │   ├── base_controller.py       # Abstract base controller with common functionality
 │       │   ├── word_controller.py
 │       │   └── study_controller.py
 │       └── schemas/                    # Request/response validation schemas
@@ -71,15 +72,17 @@ This architecture provides better maintainability, testability, and separation o
 
 ## Key Features
 
-### 1. Error Handling
-- Custom exception classes for different error types
-- Global error handlers for consistent JSON responses
-- Automatic error logging
+### 1. Standardized Error Handling
+- Custom exception classes with business error codes
+- Global error handlers for consistent HTTP 200 responses with business error codes
+- All API responses follow API design standards (HTTP 200 + business codes)
+- Automatic error logging with proper fallback handling
+- Unified response format for frontend consistency
 
-### 2. Three-Layer Architecture
+### 2. Three-Layer Architecture with Controller Pattern
 - **Repository Pattern**: Abstracts data access with interfaces
 - **Service Layer**: Contains business logic and domain operations
-- **Controller Layer**: Handles HTTP requests and responses
+- **Controller Layer**: BaseController pattern eliminates code duplication across controllers
 - **Dependency Injection**: Proper IoC container for loose coupling
 - **DTOs**: Data Transfer Objects for clean data flow between layers
 
@@ -143,17 +146,27 @@ This architecture provides better maintainability, testability, and separation o
 - `GET /api/words` - Get all words
 - `POST /api/study` - Save study result (requires `word_id` and `status`)
 
-All responses follow the format: `{"code": 0, "message": "success", "data": ...}`
+All responses follow the standardized format with HTTP 200 status code:
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {...}
+}
+```
 
 ## Error Codes
 
-- 0: Success
-- 1001: Validation Error
-- 1002: Not Found
-- 1003: Database Error
-- 1004: Authentication Error
-- 1005: Authorization Error
-- 1006: Method Not Allowed
+**API Design Standard**: All responses use HTTP 200 with business error codes for frontend consistency.
+
+- `0`: Success
+- `1001`: Validation Error
+- `1002`: Not Found
+- `1003`: Database Error
+- `1004`: Authentication Error
+- `1005`: Authorization Error
+- `1006`: Method Not Allowed
+- `500`: Internal Server Error (system fallback)
 
 ## Database Models
 
@@ -171,9 +184,12 @@ Configure these in the `.env` file:
 - Follow three-layer architecture principles
 - Use repository interfaces for testability and loose coupling
 - Services contain business logic, not controllers
+- **Controllers inherit from BaseController** to eliminate code duplication
 - Use DTOs with Flask-Marshmallow auto-generated schemas for data transfer between layers
 - Controllers handle only HTTP concerns (request/response)
+- **All exceptions are handled by global error handlers** - no try-catch needed in controllers
 - Use custom exceptions instead of generic Exception
+- **All API responses use HTTP 200 with business error codes** following API design standards
 - All API endpoints use Flask-Marshmallow validation with SQLAlchemy integration
 - Response schemas leverage SQLAlchemyAutoSchema for automatic field generation
 - Database operations are wrapped in try-catch with rollback
@@ -195,7 +211,8 @@ Configure these in the `.env` file:
 - Cross-cutting concerns
 
 ### Presentation Layer (`app/presentation/`)
-- HTTP controllers
-- Request/response handling
+- HTTP controllers inheriting from BaseController for consistency
+- Request/response handling with unified response format
 - Flask-Marshmallow validation schemas with SQLAlchemy integration
 - API routing and blueprints
+- Global error handling eliminates controller-level exception management

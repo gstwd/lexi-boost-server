@@ -8,11 +8,13 @@ Flask-based backend API server for a vocabulary learning application. Built with
 - **Repository Pattern** with interfaces for better testability
 - **RESTful API** with Flask-RESTX for interactive documentation
 - **Service Layer** with business logic encapsulation
+- **BaseController Pattern** eliminates code duplication across controllers
+- **Standardized Error Handling** with HTTP 200 + business error codes for API consistency
 - **Data Transfer Objects** for clean data flow
 - **Database Management** with SQLAlchemy and Alembic migrations
 - **Input Validation** using Marshmallow schemas
 - **Comprehensive Logging** with rotating file logs
-- **Error Handling** with custom exceptions and global handlers
+- **Global Error Handlers** with unified response format
 - **Testing Framework** with pytest and full coverage
 - **API Documentation** with Swagger/OpenAPI
 
@@ -20,7 +22,7 @@ Flask-based backend API server for a vocabulary learning application. Built with
 
 This project follows a **Three-Layer Architecture** pattern:
 
-- **Presentation Layer** (`app/presentation/`): Controllers handle HTTP requests/responses
+- **Presentation Layer** (`app/presentation/`): Controllers inherit from BaseController for consistency
 - **Business Logic Layer** (`app/business/`): Services contain domain logic and business rules
 - **Data Access Layer** (`app/data/`): Repositories manage database operations
 
@@ -91,6 +93,7 @@ This architecture provides better:
 
 5. **Implement Controller**
    - Create controller in `app/presentation/controllers/`
+   - Inherit from BaseController to eliminate boilerplate code
    - Handle HTTP requests and responses
    - Use dependency injection for services
 
@@ -115,6 +118,7 @@ This architecture provides better:
 
 3. **Update Controller**
    - Modify controller in `app/presentation/controllers/`
+   - Leverage BaseController for common functionality
    - Maintain backward compatibility when possible
 
 4. **Update Validation Rules**
@@ -159,7 +163,8 @@ This architecture provides better:
 ### Code Standards
 
 - **Error Handling**: Use custom exceptions from `app/exceptions.py`
-- **Response Format**: Follow unified JSON response structure:
+- **Controller Pattern**: Inherit from BaseController for consistency and DRY principle
+- **API Response Format**: ALL responses use HTTP 200 with business error codes following API design standards:
   ```json
   {
     "code": 0,
@@ -167,11 +172,14 @@ This architecture provides better:
     "data": {...}
   }
   ```
+- **Global Error Handling**: Controllers don't need try-catch blocks - use global handlers
 - **Database Operations**: Always wrap in try-catch with rollback
 - **Validation**: Use marshmallow schemas for all input validation
 - **Logging**: Use configured loggers, avoid print statements
 
 ### Error Codes
+
+**API Design Standard**: All responses use HTTP 200 with business error codes for frontend consistency.
 
 - `0`: Success
 - `1001`: Validation Error
@@ -180,6 +188,7 @@ This architecture provides better:
 - `1004`: Authentication Error
 - `1005`: Authorization Error
 - `1006`: Method Not Allowed
+- `500`: Internal Server Error (system fallback)
 
 ### Testing Requirements
 
@@ -223,6 +232,7 @@ app/
          study_service.py          # Study business logic
    presentation/                   # Presentation Layer
       controllers/                 # HTTP controllers
+         base_controller.py        # Abstract base controller with common functionality
          word_controller.py        # Word API endpoints
          study_controller.py       # Study API endpoints
       schemas/                     # Request/response validation
