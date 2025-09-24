@@ -1,9 +1,10 @@
-from app.data.repositories import WordRepositoryInterface, StudyRecordRepositoryInterface
+from app.data.repositories import WordRepository, StudyRecordRepository
 from app.business.dto import StudyRecordDTO, WordDTO
-from app.exceptions import NotFoundError
+from app.exceptions import APIException
+
 
 class StudyService:
-    def __init__(self, word_repository: WordRepositoryInterface, study_record_repository: StudyRecordRepositoryInterface):
+    def __init__(self, word_repository: WordRepository, study_record_repository: StudyRecordRepository):
         self._word_repository = word_repository
         self._study_record_repository = study_record_repository
     
@@ -12,7 +13,7 @@ class StudyService:
         # 检查单词是否存在
         word = self._word_repository.get_by_id(word_id)
         if not word:
-            raise NotFoundError("Word not found")
+            raise APIException("Word not found")
         
         # 检查是否已有学习记录
         existing_record = self._study_record_repository.get_by_word_id(word_id)
@@ -30,5 +31,5 @@ class StudyService:
         """根据单词ID获取学习记录"""
         record = self._study_record_repository.get_by_word_id(word_id)
         if not record:
-            raise NotFoundError(f"Study record for word {word_id} not found")
+            raise APIException(f"Study record for word {word_id} not found")
         return StudyRecordDTO.from_model(record)

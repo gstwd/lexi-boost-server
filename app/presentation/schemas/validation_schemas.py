@@ -48,8 +48,8 @@ class WordResponseSchema(SQLAlchemyAutoSchema):
     @post_dump
     def format_response(self, data, **kwargs):
         """响应格式化"""
-        if data.get('created_at'):
-            data['created_at'] = data['created_at'].replace('+00:00', 'Z')
+        if data.get('create_time'):
+            data['create_time'] = data['create_time'].replace('+00:00', 'Z')
         return data
 
 class StudyRecordResponseSchema(SQLAlchemyAutoSchema):
@@ -63,7 +63,7 @@ class StudyRecordResponseSchema(SQLAlchemyAutoSchema):
     @post_dump
     def format_response(self, data, **kwargs):
         """响应格式化"""
-        for field in ['created_at', 'updated_at']:
+        for field in ['create_time', 'updated_at']:
             if data.get(field):
                 data[field] = data[field].replace('+00:00', 'Z')
         return data
@@ -81,8 +81,8 @@ class WordWithStudyRecordSchema(SQLAlchemyAutoSchema):
     @post_dump
     def format_response(self, data, **kwargs):
         """响应格式化"""
-        if data.get('created_at'):
-            data['created_at'] = data['created_at'].replace('+00:00', 'Z')
+        if data.get('create_time'):
+            data['create_time'] = data['create_time'].replace('+00:00', 'Z')
         return data
 
 # ============ DTO转换助手类 ============

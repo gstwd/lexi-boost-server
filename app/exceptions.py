@@ -13,19 +13,3 @@ class APIException(Exception):
 class ValidationError(APIException):
     error_code = 1001
     message = "Validation failed"
-
-class NotFoundError(APIException):
-    error_code = 1002
-    message = "Resource not found"
-
-class DatabaseError(APIException):
-    error_code = 1003
-    message = "Database operation failed"
-
-class AuthenticationError(APIException):
-    error_code = 1004
-    message = "Authentication failed"
-
-class AuthorizationError(APIException):
-    error_code = 1005
-    message = "Access denied"

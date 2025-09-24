@@ -21,7 +21,7 @@ class TestWordModel:
             assert 'id' in word_dict
             assert 'word' in word_dict
             assert 'meaning' in word_dict
-            assert 'created_at' in word_dict
+            assert 'create_time' in word_dict
 
 class TestStudyRecordModel:
     def test_study_record_creation(self, app, sample_word):
@@ -44,7 +44,7 @@ class TestStudyRecordModel:
             assert 'id' in record_dict
             assert 'word_id' in record_dict
             assert 'status' in record_dict
-            assert 'created_at' in record_dict
+            assert 'create_time' in record_dict
             assert 'updated_at' in record_dict
 
     def test_word_study_record_relationship(self, app, sample_word):

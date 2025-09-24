@@ -19,7 +19,7 @@ class StudyRecordDTO:
             id=record_model.id,
             word_id=record_model.word_id,
             status=record_model.status,
-            created_at=record_model.created_at,
+            created_at=record_model.create_time,
             updated_at=record_model.updated_at
         )
 

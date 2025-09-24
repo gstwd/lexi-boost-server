@@ -8,8 +8,9 @@ from app.data.models.word import Word
 class WordDTO:
     id: Optional[int] = None
     word: Optional[str] = None
+    input_times: Optional[int] = None
     meaning: Optional[str] = None
-    created_at: Optional[datetime] = None
+    create_time: Optional[datetime] = None
 
     @classmethod
     def from_model(cls, word_model):
@@ -17,8 +18,9 @@ class WordDTO:
         return cls(
             id=word_model.id,
             word=word_model.word,
+            input_times=word_model.input_times,
             meaning=word_model.meaning,
-            created_at=word_model.created_at
+            create_time=word_model.create_time
         )
 
     @classmethod
