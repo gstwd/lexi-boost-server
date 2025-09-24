@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 from datetime import datetime
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from app.extensions import ma
 from app.data.models.word import Word
 
@@ -34,7 +33,7 @@ class WordDTO:
         schema = WordDTOSchema()
         return schema.dump(self)
 
-class WordDTOSchema(SQLAlchemyAutoSchema):
+class WordDTOSchema(ma.SQLAlchemyAutoSchema):
     """WordDTO的Flask-Marshmallow auto schema - 基于SQLAlchemy模型自动生成"""
     class Meta:
         model = Word

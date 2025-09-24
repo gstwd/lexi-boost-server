@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
 from datetime import datetime
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from app.extensions import ma
 from app.data.models.study_record import StudyRecord
 
@@ -36,7 +35,7 @@ class StudyRecordDTO:
         schema = StudyRecordDTOSchema()
         return schema.dump(self)
 
-class StudyRecordDTOSchema(SQLAlchemyAutoSchema):
+class StudyRecordDTOSchema(ma.SQLAlchemyAutoSchema):
     """StudyRecordDTO的Flask-Marshmallow auto schema - 基于SQLAlchemy模型自动生成"""
     class Meta:
         model = StudyRecord
