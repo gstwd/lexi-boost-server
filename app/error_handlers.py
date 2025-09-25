@@ -17,7 +17,7 @@ def register_error_handlers(app):
     @app.errorhandler(Exception)
     def handle_generic_exception(error):
         """Handle all other exceptions as internal server errors"""
-        app.logger.error(f'Unhandled exception: {error}')
+        # app.logger.error(f'Unhandled exception: {error}')
         response = {
             'code': 500,
             'message': 'Internal server error',

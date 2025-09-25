@@ -54,5 +54,4 @@ def log_request_info(app):
 
     @app.after_request
     def after_request(response):
-        app.logger.info(f'Response: {response.status_code}')
         return response
