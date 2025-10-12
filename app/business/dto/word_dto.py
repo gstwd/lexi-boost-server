@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional
 from datetime import datetime
-from app.extensions import ma
+from typing import Optional
+
 from app.data.models.word import Word
+from app.extensions import ma
+
 
 @dataclass
 class WordDTO:
@@ -10,33 +12,37 @@ class WordDTO:
     word: Optional[str] = None
     input_times: Optional[int] = None
     meaning: Optional[str] = None
-    create_time: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     @classmethod
-    def from_model(cls, word_model):
-        """从数据库模型创建DTO"""
+    def from_model(cls, word_model: Word) -> "WordDTO":
+        """Build a DTO from a Word database model."""
         return cls(
             id=word_model.id,
             word=word_model.word,
             input_times=word_model.input_times,
             meaning=word_model.meaning,
-            create_time=word_model.create_time
+            created_at=word_model.created_at,
+            updated_at=word_model.updated_at,
         )
 
     @classmethod
-    def from_dict(cls, data):
-        """从字典创建DTO（使用marshmallow验证）"""
+    def from_dict(cls, data: dict) -> "WordDTO":
+        """Validate incoming payload and construct a DTO."""
         schema = WordDTOSchema()
         validated_data = schema.load(data)
         return cls(**validated_data)
 
-    def to_dict(self):
-        """转换为字典（使用marshmallow序列化）"""
+    def to_dict(self) -> dict:
+        """Serialize the DTO into a dictionary using Marshmallow."""
         schema = WordDTOSchema()
         return schema.dump(self)
 
+
 class WordDTOSchema(ma.SQLAlchemyAutoSchema):
-    """WordDTO的Flask-Marshmallow auto schema - 基于SQLAlchemy模型自动生成"""
+    """Auto schema definition for WordDTO serialisation/deserialisation."""
+
     class Meta:
         model = Word
         load_instance = False

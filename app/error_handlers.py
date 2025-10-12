@@ -1,29 +1,34 @@
 from flask import jsonify
 
+from werkzeug.exceptions import HTTPException
+
 from app.exceptions import APIException
 
 
 def register_error_handlers(app):
     @app.errorhandler(APIException)
     def handle_api_exception(error):
-        """Handle business exceptions with HTTP 200 and business error codes"""
+        """Handle business exceptions with configured HTTP status codes."""
         response = {
             'code': error.error_code,
             'message': error.message,
             'data': None
         }
-        return jsonify(response), 200
+        return jsonify(response), error.status_code
 
     @app.errorhandler(Exception)
     def handle_generic_exception(error):
-        """Handle all other exceptions as internal server errors"""
-        # app.logger.error(f'Unhandled exception: {error}')
+        """Handle all other exceptions as internal server errors."""
+        if isinstance(error, HTTPException):
+            return error
+
+        app.logger.exception('Unhandled exception')
         response = {
             'code': 500,
             'message': 'Internal server error',
             'data': None
         }
-        return jsonify(response), 200
+        return jsonify(response), 500
 
     @app.errorhandler(404)
     def handle_not_found(error):
@@ -33,7 +38,7 @@ def register_error_handlers(app):
             'message': 'Resource not found',
             'data': None
         }
-        return jsonify(response), 200
+        return jsonify(response), 404
 
     @app.errorhandler(405)
     def handle_method_not_allowed(error):
@@ -43,4 +48,4 @@ def register_error_handlers(app):
             'message': 'Method not allowed',
             'data': None
         }
-        return jsonify(response), 200
+        return jsonify(response), 405

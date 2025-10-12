@@ -1,22 +1,29 @@
 from typing import List, Optional
-from app.extensions import db
+
+from sqlalchemy.exc import IntegrityError
+
 from app.data.models import Word
+from app.extensions import db
 
 class WordRepository:
     def get_all(self) -> List[Word]:
         return Word.query.all()
 
     def get_by_id(self, word_id: int) -> Optional[Word]:
-        return Word.query.get(word_id)
+        return db.session.get(Word, word_id)
 
     def create(self, word: str, meaning: str) -> Word:
         new_word = Word(word=word, meaning=meaning)
         db.session.add(new_word)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            raise
         return new_word
 
     def update(self, word_id: int, **kwargs) -> Optional[Word]:
-        word = Word.query.get(word_id)
+        word = db.session.get(Word, word_id)
         if not word:
             return None
 
@@ -28,7 +35,7 @@ class WordRepository:
         return word
 
     def delete(self, word_id: int) -> bool:
-        word = Word.query.get(word_id)
+        word = db.session.get(Word, word_id)
         if not word:
             return False
 

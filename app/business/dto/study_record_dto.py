@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from typing import Optional
 from datetime import datetime
-from app.extensions import ma
+from typing import Optional
+
 from app.data.models.study_record import StudyRecord
+from app.extensions import ma
+
 
 @dataclass
 class StudyRecordDTO:
@@ -13,30 +15,32 @@ class StudyRecordDTO:
     updated_at: Optional[datetime] = None
 
     @classmethod
-    def from_model(cls, record_model):
-        """从数据库模型创建DTO"""
+    def from_model(cls, record_model: StudyRecord) -> "StudyRecordDTO":
+        """Build a DTO from a StudyRecord database model."""
         return cls(
             id=record_model.id,
             word_id=record_model.word_id,
             status=record_model.status,
-            created_at=record_model.create_time,
-            updated_at=record_model.updated_at
+            created_at=record_model.created_at,
+            updated_at=record_model.updated_at,
         )
 
     @classmethod
-    def from_dict(cls, data):
-        """从字典创建DTO（使用marshmallow验证）"""
+    def from_dict(cls, data: dict) -> "StudyRecordDTO":
+        """Validate incoming payload and construct a DTO."""
         schema = StudyRecordDTOSchema()
         validated_data = schema.load(data)
         return cls(**validated_data)
 
-    def to_dict(self):
-        """转换为字典（使用marshmallow序列化）"""
+    def to_dict(self) -> dict:
+        """Serialize the DTO into a dictionary using Marshmallow."""
         schema = StudyRecordDTOSchema()
         return schema.dump(self)
 
+
 class StudyRecordDTOSchema(ma.SQLAlchemyAutoSchema):
-    """StudyRecordDTO的Flask-Marshmallow auto schema - 基于SQLAlchemy模型自动生成"""
+    """Auto schema definition for StudyRecordDTO serialisation/deserialisation."""
+
     class Meta:
         model = StudyRecord
         load_instance = False

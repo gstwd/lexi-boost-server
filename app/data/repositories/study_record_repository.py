@@ -1,6 +1,8 @@
 from typing import Optional
-from app.extensions import db
+
 from app.data.models import StudyRecord
+from app.extensions import db
+
 
 class StudyRecordRepository:
     def get_by_word_id(self, word_id: int) -> Optional[StudyRecord]:
@@ -13,7 +15,7 @@ class StudyRecordRepository:
         return study_record
 
     def update(self, record_id: int, **kwargs) -> Optional[StudyRecord]:
-        record = StudyRecord.query.get(record_id)
+        record = db.session.get(StudyRecord, record_id)
         if not record:
             return None
 

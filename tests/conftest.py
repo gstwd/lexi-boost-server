@@ -1,9 +1,16 @@
-import pytest
 import os
+import sys
 import tempfile
+
+import pytest
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from app import create_app
+from app.data.models import StudyRecord, Word
 from app.extensions import db
-from app.data.models import Word, StudyRecord
 
 @pytest.fixture
 def app():
