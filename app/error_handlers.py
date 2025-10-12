@@ -14,7 +14,7 @@ def register_error_handlers(app):
             'message': error.message,
             'data': None
         }
-        return jsonify(response), error.status_code
+        return jsonify(response), 200
 
     @app.errorhandler(Exception)
     def handle_generic_exception(error):
@@ -28,7 +28,7 @@ def register_error_handlers(app):
             'message': 'Internal server error',
             'data': None
         }
-        return jsonify(response), 500
+        return jsonify(response), 200
 
     @app.errorhandler(404)
     def handle_not_found(error):
@@ -38,7 +38,7 @@ def register_error_handlers(app):
             'message': 'Resource not found',
             'data': None
         }
-        return jsonify(response), 404
+        return jsonify(response), 200
 
     @app.errorhandler(405)
     def handle_method_not_allowed(error):
@@ -48,4 +48,4 @@ def register_error_handlers(app):
             'message': 'Method not allowed',
             'data': None
         }
-        return jsonify(response), 405
+        return jsonify(response), 200

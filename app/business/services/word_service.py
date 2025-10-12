@@ -21,7 +21,6 @@ class WordService:
             raise APIException(
                 f"Word with id {word_id} not found",
                 error_code=1002,
-                status_code=404,
             )
         return WordDTO.from_model(word)
 
@@ -32,7 +31,6 @@ class WordService:
             raise APIException(
                 "Word already exists",
                 error_code=1005,
-                status_code=409,
             ) from exc
         return WordDTO.from_model(new_word)
 
@@ -42,7 +40,6 @@ class WordService:
             raise APIException(
                 f"Word with id {word_id} not found",
                 error_code=1002,
-                status_code=404,
             )
         return WordDTO.from_model(updated_word)
 
@@ -52,6 +49,5 @@ class WordService:
             raise APIException(
                 f"Word with id {word_id} not found",
                 error_code=1002,
-                status_code=404,
             )
         return success

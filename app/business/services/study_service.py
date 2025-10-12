@@ -28,6 +28,5 @@ class StudyService:
             raise APIException(
                 f"Study record for word {word_id} not found",
                 error_code=1002,
-                status_code=404,
             )
         return StudyRecordDTO.from_model(record)
