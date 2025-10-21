@@ -3,7 +3,7 @@ from app.extensions import db, migrate, ma, cors
 from app.error_handlers import register_error_handlers
 from app.logging_config import setup_logging, log_request_info
 from config import config
-from app.data.repositories import WordRepository, StudyRecordRepository
+from app.data.repositories import WordRecordRepository, StudyRecordRepository
 from app.business.services import WordService, StudyService
 from app.presentation.controllers import WordController, StudyController
 import os
@@ -34,7 +34,7 @@ def create_app(config_name=None):
     # Dependency injection and route registration
     with app.app_context():
         # Create repository instances
-        word_repository = WordRepository()
+        word_repository = WordRecordRepository()
         study_record_repository = StudyRecordRepository()
 
         # Create service instances

@@ -66,7 +66,7 @@ class TestWordsAPI:
         assert response.status_code == 404
         data = json.loads(response.data)
         assert data['code'] == 1002
-        assert 'Word not found' in data['message']
+        assert 'WordRecord not found' in data['message']
 
     def test_save_study_result_missing_data(self, client):
         payload = {

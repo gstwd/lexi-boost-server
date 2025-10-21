@@ -1,3 +1,4 @@
+import re
 from functools import wraps
 
 from marshmallow import (
@@ -5,12 +6,12 @@ from marshmallow import (
     fields,
     post_dump,
     pre_load,
-    validate,
+    validate, EXCLUDE,
 )
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 from app.data.models.study_record import StudyRecord
-from app.data.models.word import Word
+from app.data.models.word_records import WordRecord
 from app.exceptions import APIException, ValidationError
 from app.extensions import ma
 
@@ -24,18 +25,31 @@ class StudyRecordSchema(ma.Schema):
     )
 
 
-class WordSchema(ma.Schema):
+class WordRecordSchema(ma.Schema):
     word = fields.String(required=True, validate=validate.Length(min=1, max=100))
+    word_entry_id = fields.Integer(validate=validate.Range(min=0))
     meaning = fields.String(required=True, validate=validate.Length(min=1, max=1000))
+    tags = fields.List(fields.String(), validate=validate.Length(max=100))
+    location = fields.Dict()
+    context = fields.String(validate=validate.Length(max=255))
+    notes = fields.String(validate=validate.Length(max=255))
+    source_type = fields.String(validate=validate.OneOf(['reading', 'listening', 'conversation', 'media', 'study', 'other']))
+    source_detail = fields.String(validate=validate.Length(max=255))
+
+    class Meta:
+        unknown = EXCLUDE  # 忽略未知字段
 
     @pre_load
     def clean_data(self, data, **kwargs):
+        new_data = {}
+        for k, v in data.items():
+            new_data[camel_to_snake(k)] = v
         """Normalise free-text fields before validation."""
-        if data.get('word'):
-            data['word'] = data['word'].strip().lower()
-        if data.get('meaning'):
-            data['meaning'] = data['meaning'].strip()
-        return data
+        if new_data.get('word'):
+            new_data['word'] = new_data['word'].strip().lower()
+        if new_data.get('meaning'):
+            new_data['meaning'] = new_data['meaning'].strip()
+        return new_data
 
 
 class WordQuerySchema(ma.Schema):
@@ -53,17 +67,17 @@ class WordQuerySchema(ma.Schema):
 
 # ============ Response Schemas ============
 class WordResponseSchema(SQLAlchemyAutoSchema):
-    """Serialise Word resources."""
+    """Serialise WordRecord resources."""
 
     class Meta:
-        model = Word
+        model = WordRecord
         load_instance = True
         include_relationships = False
         dateformat = '%Y-%m-%dT%H:%M:%S.%fZ'
 
     @post_dump
     def format_response(self, data, **kwargs):
-        for field in ['created_at', 'updated_at']:
+        for field in ['create_time', 'update_time']:
             if data.get(field):
                 data[field] = data[field].replace('+00:00', 'Z')
         return data
@@ -80,26 +94,26 @@ class StudyRecordResponseSchema(SQLAlchemyAutoSchema):
 
     @post_dump
     def format_response(self, data, **kwargs):
-        for field in ['created_at', 'updated_at']:
+        for field in ['create_time', 'update_time']:
             if data.get(field):
                 data[field] = data[field].replace('+00:00', 'Z')
         return data
 
 
 class WordWithStudyRecordSchema(SQLAlchemyAutoSchema):
-    """Serialise Word resources together with an optional study record."""
+    """Serialise WordRecord resources together with an optional study record."""
 
     study_record = fields.Nested(StudyRecordResponseSchema, allow_none=True)
 
     class Meta:
-        model = Word
+        model = WordRecord
         load_instance = True
         include_relationships = False
         dateformat = '%Y-%m-%dT%H:%M:%S.%fZ'
 
     @post_dump
     def format_response(self, data, **kwargs):
-        for field in ['created_at', 'updated_at']:
+        for field in ['create_time', 'update_time']:
             if data.get(field):
                 data[field] = data[field].replace('+00:00', 'Z')
         return data
@@ -144,7 +158,7 @@ def validate_json(schema_class):
             data = request.get_json(silent=True)
 
             if data is None:
-                raise APIException("No JSON data provided", error_code=1004, status_code=415)
+                raise APIException("No JSON data provided", error_code=1004)
 
             try:
                 validated_data = schema.load(data)
@@ -177,3 +191,12 @@ def validate_args(schema_class):
         return wrapper
 
     return decorator
+
+
+def camel_to_snake(name: str) -> str:
+    """
+    将驼峰命名转换为下划线命名
+    例: userId -> user_id, wordEntryId -> word_entry_id
+    """
+    # 在大写字母前加下划线，然后小写整个字符串
+    return re.sub(r'(?<!^)(?=[A-Z])', '_', name).lower()

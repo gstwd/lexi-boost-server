@@ -218,22 +218,22 @@ app/
    api_docs.py                     # API documentation setup
    data/                           # Data Access Layer
       models/                      # Database models
-         word.py                   # Word entity
+         word.py                   # WordRecord entity
          study_record.py           # StudyRecord entity
       repositories/                # Repository implementations
-         word_repository.py        # Word data access
+         word_repository.py        # WordRecord data access
          study_record_repository.py # StudyRecord data access
    business/                       # Business Logic Layer
       dto/                         # Data Transfer Objects
-         word_dto.py               # Word DTO
+         word_dto.py               # WordRecord DTO
          study_record_dto.py       # StudyRecord DTO
       services/                    # Business services
-         word_service.py           # Word business logic
+         word_service.py           # WordRecord business logic
          study_service.py          # Study business logic
    presentation/                   # Presentation Layer
       controllers/                 # HTTP controllers
          base_controller.py        # Abstract base controller with common functionality
-         word_controller.py        # Word API endpoints
+         word_controller.py        # WordRecord API endpoints
          study_controller.py       # Study API endpoints
       schemas/                     # Request/response validation
          validation_schemas.py     # Marshmallow schemas

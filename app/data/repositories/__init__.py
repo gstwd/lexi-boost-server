@@ -1,7 +1,7 @@
-from .word_repository import WordRepository
+from .word_record_repository import WordRecordRepository
 from .study_record_repository import StudyRecordRepository
 
 __all__ = [
-    'WordRepository',
+    'WordRecordRepository',
     'StudyRecordRepository'
 ]

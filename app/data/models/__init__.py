@@ -1,4 +1,4 @@
-from .word import Word
+from .word_records import WordRecord
 from .study_record import StudyRecord
 
-__all__ = ['Word', 'StudyRecord']
+__all__ = ['WordRecord', 'StudyRecord']

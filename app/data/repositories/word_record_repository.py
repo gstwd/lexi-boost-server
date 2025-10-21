@@ -2,18 +2,18 @@ from typing import List, Optional
 
 from sqlalchemy.exc import IntegrityError
 
-from app.data.models import Word
+from app.data.models import WordRecord
 from app.extensions import db
 
-class WordRepository:
-    def get_all(self) -> List[Word]:
-        return Word.query.all()
+class WordRecordRepository:
+    def get_all(self) -> List[WordRecord]:
+        return WordRecord.query.all()
 
-    def get_by_id(self, word_id: int) -> Optional[Word]:
-        return db.session.get(Word, word_id)
+    def get_by_id(self, word_id: int) -> Optional[WordRecord]:
+        return db.session.get(WordRecord, word_id)
 
-    def create(self, word: str, meaning: str) -> Word:
-        new_word = Word(word=word, meaning=meaning)
+    def create(self, **kwargs) -> WordRecord:
+        new_word = WordRecord(**kwargs)
         db.session.add(new_word)
         try:
             db.session.commit()
@@ -22,8 +22,8 @@ class WordRepository:
             raise
         return new_word
 
-    def update(self, word_id: int, **kwargs) -> Optional[Word]:
-        word = db.session.get(Word, word_id)
+    def update(self, word_id: int, **kwargs) -> Optional[WordRecord]:
+        word = db.session.get(WordRecord, word_id)
         if not word:
             return None
 
@@ -35,7 +35,7 @@ class WordRepository:
         return word
 
     def delete(self, word_id: int) -> bool:
-        word = db.session.get(Word, word_id)
+        word = db.session.get(WordRecord, word_id)
         if not word:
             return False
 

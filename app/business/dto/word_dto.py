@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
-from app.data.models.word import Word
+from app.data.models.word_records import WordRecord
 from app.extensions import ma
 
 
@@ -10,21 +10,24 @@ from app.extensions import ma
 class WordDTO:
     id: Optional[int] = None
     word: Optional[str] = None
+    word_entry_id: Optional[int] = None
     input_times: Optional[int] = None
     meaning: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    context: Optional[str] = None
+    tags: Optional[List[str]] = None
+    create_time: Optional[datetime] = None
+    update_time: Optional[datetime] = None
 
     @classmethod
-    def from_model(cls, word_model: Word) -> "WordDTO":
-        """Build a DTO from a Word database model."""
+    def from_model(cls, word_model: WordRecord) -> "WordDTO":
+        """Build a DTO from a WordRecord database model."""
         return cls(
             id=word_model.id,
             word=word_model.word,
             input_times=word_model.input_times,
             meaning=word_model.meaning,
-            created_at=word_model.created_at,
-            updated_at=word_model.updated_at,
+            create_time=word_model.create_time,
+            update_time=word_model.update_time,
         )
 
     @classmethod
@@ -44,7 +47,7 @@ class WordDTOSchema(ma.SQLAlchemyAutoSchema):
     """Auto schema definition for WordDTO serialisation/deserialisation."""
 
     class Meta:
-        model = Word
+        model = WordRecord
         load_instance = False
         include_relationships = False
         dateformat = '%Y-%m-%dT%H:%M:%S.%fZ'

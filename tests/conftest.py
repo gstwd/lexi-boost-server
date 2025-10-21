@@ -9,7 +9,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from app import create_app
-from app.data.models import StudyRecord, Word
+from app.data.models import StudyRecord, WordRecord
 from app.extensions import db
 
 @pytest.fixture
@@ -45,7 +45,7 @@ def runner(app):
 @pytest.fixture
 def sample_word(app):
     with app.app_context():
-        word = Word(word="hello", meaning="a greeting")
+        word = WordRecord(word="hello", meaning="a greeting")
         db.session.add(word)
         db.session.commit()
         word_id = word.id

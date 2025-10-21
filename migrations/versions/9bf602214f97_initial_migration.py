@@ -23,8 +23,8 @@ def upgrade():
         sa.Column('word', sa.String(length=100), nullable=False),
         sa.Column('input_times', sa.Integer(), nullable=False, server_default='0'),
         sa.Column('meaning', sa.Text(), nullable=False),
-        sa.Column('created_at', sa.DateTime(), nullable=False, server_default=sa.func.now()),
-        sa.Column('updated_at', sa.DateTime(), nullable=False, server_default=sa.func.now()),
+        sa.Column('create_time', sa.DateTime(), nullable=False, server_default=sa.func.now()),
+        sa.Column('update_time', sa.DateTime(), nullable=False, server_default=sa.func.now()),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('word'),
     )
@@ -34,8 +34,8 @@ def upgrade():
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('word_id', sa.Integer(), nullable=False),
         sa.Column('status', sa.String(length=20), nullable=False),
-        sa.Column('created_at', sa.DateTime(), nullable=False, server_default=sa.func.now()),
-        sa.Column('updated_at', sa.DateTime(), nullable=False, server_default=sa.func.now()),
+        sa.Column('create_time', sa.DateTime(), nullable=False, server_default=sa.func.now()),
+        sa.Column('update_time', sa.DateTime(), nullable=False, server_default=sa.func.now()),
         sa.ForeignKeyConstraint(['word_id'], ['words.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
     )

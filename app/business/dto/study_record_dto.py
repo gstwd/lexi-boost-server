@@ -11,8 +11,8 @@ class StudyRecordDTO:
     id: Optional[int] = None
     word_id: Optional[int] = None
     status: Optional[str] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    create_time: Optional[datetime] = None
+    update_time: Optional[datetime] = None
 
     @classmethod
     def from_model(cls, record_model: StudyRecord) -> "StudyRecordDTO":
@@ -21,8 +21,8 @@ class StudyRecordDTO:
             id=record_model.id,
             word_id=record_model.word_id,
             status=record_model.status,
-            created_at=record_model.created_at,
-            updated_at=record_model.updated_at,
+            create_time=record_model.create_time,
+            update_time=record_model.update_time,
         )
 
     @classmethod

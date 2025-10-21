@@ -3,12 +3,12 @@ from typing import List
 from sqlalchemy.exc import IntegrityError
 
 from app.business.dto import WordDTO
-from app.data.repositories import WordRepository
+from app.data.repositories import WordRecordRepository
 from app.exceptions import APIException
 
 
 class WordService:
-    def __init__(self, word_repository: WordRepository):
+    def __init__(self, word_repository: WordRecordRepository):
         self._word_repository = word_repository
 
     def get_all_words(self) -> List[WordDTO]:
@@ -19,17 +19,17 @@ class WordService:
         word = self._word_repository.get_by_id(word_id)
         if not word:
             raise APIException(
-                f"Word with id {word_id} not found",
+                f"WordRecord with id {word_id} not found",
                 error_code=1002,
             )
         return WordDTO.from_model(word)
 
-    def create_word(self, word: str, meaning: str) -> WordDTO:
+    def create_word(self, **kwargs) -> WordDTO:
         try:
-            new_word = self._word_repository.create(word, meaning)
+            new_word = self._word_repository.create(**kwargs)
         except IntegrityError as exc:
             raise APIException(
-                "Word already exists",
+                "WordRecord already exists",
                 error_code=1005,
             ) from exc
         return WordDTO.from_model(new_word)
@@ -38,7 +38,7 @@ class WordService:
         updated_word = self._word_repository.update(word_id, **kwargs)
         if not updated_word:
             raise APIException(
-                f"Word with id {word_id} not found",
+                f"WordRecord with id {word_id} not found",
                 error_code=1002,
             )
         return WordDTO.from_model(updated_word)
@@ -47,7 +47,10 @@ class WordService:
         success = self._word_repository.delete(word_id)
         if not success:
             raise APIException(
-                f"Word with id {word_id} not found",
+                f"WordRecord with id {word_id} not found",
                 error_code=1002,
             )
         return success
+
+    def check_duplication(self, word):
+        pass

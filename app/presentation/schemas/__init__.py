@@ -1,6 +1,6 @@
 from .validation_schemas import (
     StudyRecordSchema,
-    WordSchema,
+    WordRecordSchema,
     WordQuerySchema,
     validate_json,
     validate_args,
@@ -12,7 +12,7 @@ from .validation_schemas import (
 
 __all__ = [
     'StudyRecordSchema',
-    'WordSchema',
+    'WordRecordSchema',
     'WordQuerySchema',
     'validate_json',
     'validate_args',
