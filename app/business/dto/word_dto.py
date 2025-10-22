@@ -24,8 +24,11 @@ class WordDTO:
         return cls(
             id=word_model.id,
             word=word_model.word,
+            word_entry_id=word_model.word_entry_id,
             input_times=word_model.input_times,
             meaning=word_model.meaning,
+            context=word_model.context,
+            tags=word_model.tags if word_model.tags else [],
             create_time=word_model.create_time,
             update_time=word_model.update_time,
         )

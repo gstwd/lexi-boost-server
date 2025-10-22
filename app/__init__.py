@@ -1,12 +1,14 @@
 from flask import Flask
+
 from app.extensions import db, migrate, ma, cors
 from app.error_handlers import register_error_handlers
 from app.logging_config import setup_logging, log_request_info
 from config import config
-from app.data.repositories import WordRecordRepository, StudyRecordRepository
+from app.data.repositories import WordRecordRepository, StudyRecordRepository, WordEntryRepository
 from app.business.services import WordService, StudyService
 from app.presentation.controllers import WordController, StudyController
 import os
+
 
 def create_app(config_name=None):
     if config_name is None:
@@ -34,12 +36,13 @@ def create_app(config_name=None):
     # Dependency injection and route registration
     with app.app_context():
         # Create repository instances
-        word_repository = WordRecordRepository()
+        word_record_repository = WordRecordRepository()
+        word_entry_repository = WordEntryRepository()
         study_record_repository = StudyRecordRepository()
 
         # Create service instances
-        word_service = WordService(word_repository)
-        study_service = StudyService(word_repository, study_record_repository)
+        word_service = WordService(word_record_repository, word_entry_repository)
+        study_service = StudyService(word_record_repository, study_record_repository)
 
         # Create controller instances and register blueprints
         word_controller = WordController(word_service)
