@@ -53,8 +53,8 @@ class WordService:
             )
         return success
 
-    def check_duplication(self, word):
-        pass
+    def check_duplication(self, **kwargs):
+        return {}
 
     def search_word_entries(self, query, page, limit) -> List[WordEntryDTO]:
         words = self.word_entry_repository.search_word_entries(query, page, limit)

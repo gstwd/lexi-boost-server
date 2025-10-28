@@ -1,7 +1,7 @@
 from flask import request
 
 from app.business.services import WordService
-from app.presentation.schemas import validate_json, WordRecordSchema, SchemaConverter
+from app.presentation.schemas import validate_json, WordRecordSchema, SchemaConverter, WordDuplicationSchema
 from .base_controller import BaseController
 
 
@@ -58,8 +58,11 @@ class WordController(BaseController):
 
     """重复录入分析"""
 
-    def check_duplication(self, word):
-        return self._word_service.check_duplication(word)
+    @validate_json(WordDuplicationSchema)
+    def check_duplication(self):
+        data = request.validated_data
+        self._word_service.check_duplication(**data)
+        return self.success_response({})
 
     """词典管理"""
 

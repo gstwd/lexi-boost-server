@@ -65,6 +65,16 @@ class WordQuerySchema(ma.Schema):
         return data
 
 
+class WordDuplicationSchema(ma.Schema):
+    word = fields.String(required=True, validate=validate.Length(min=1, max=100))
+    meaning = fields.String(required=True, validate=validate.Length(min=1, max=1000))
+    context = fields.String(required=True, validate=validate.Length(min=1, max=1000))
+
+    class Meta:
+        unknown = EXCLUDE
+
+
+
 # ============ Response Schemas ============
 class WordResponseSchema(SQLAlchemyAutoSchema):
     """Serialise WordRecord resources."""
